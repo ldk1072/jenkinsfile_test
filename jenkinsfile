@@ -1,9 +1,30 @@
 pipeline {
 	agent { label 'linux01' }
+	tools {
+		maven 'maven-3.5.4'
+	}
 	stages {
-		stage('Hello from github'){
+		stage('checkout'){
 			steps {
-				echo "Hello World"
+				git 'https://github.com/ldk1072/jenkinsfile_test.git'
+			}
+		}
+		stage('Build'){
+			steps{
+				sh 'mvn clear compile'
+			}
+		}
+		stage('Test'){
+         steps{
+				steps{
+					sh 'mvn test'
+					junit '**/target/surefire-reports/TEST-*.xml'
+				}
+         }
+      }
+		stage('Package'){
+			steps {
+				sh 'mvn package'
 			}
 		}
 	}
